@@ -17,8 +17,10 @@ import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.*
@@ -26,6 +28,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -66,8 +69,6 @@ import com.zionhuang.innertube.YouTube
 import com.zionhuang.innertube.models.SongItem
 import com.zionhuang.music.constants.*
 import com.zionhuang.music.db.MusicDatabase
-import com.zionhuang.music.db.entities.PlaylistEntity.Companion.DOWNLOADED_PLAYLIST_ID
-import com.zionhuang.music.db.entities.PlaylistEntity.Companion.LIKED_PLAYLIST_ID
 import com.zionhuang.music.db.entities.SearchHistory
 import com.zionhuang.music.extensions.*
 import com.zionhuang.music.playback.DownloadUtil
@@ -86,7 +87,6 @@ import com.zionhuang.music.ui.screens.library.LibraryAlbumsScreen
 import com.zionhuang.music.ui.screens.library.LibraryArtistsScreen
 import com.zionhuang.music.ui.screens.library.LibraryPlaylistsScreen
 import com.zionhuang.music.ui.screens.library.LibrarySongsScreen
-import com.zionhuang.music.ui.screens.playlist.BuiltInPlaylistScreen
 import com.zionhuang.music.ui.screens.playlist.LocalPlaylistScreen
 import com.zionhuang.music.ui.screens.playlist.OnlinePlaylistScreen
 import com.zionhuang.music.ui.screens.search.LocalSearchScreen
@@ -101,6 +101,7 @@ import com.zionhuang.music.utils.dataStore
 import com.zionhuang.music.utils.get
 import com.zionhuang.music.utils.rememberEnumPreference
 import com.zionhuang.music.utils.rememberPreference
+import com.zionhuang.music.utils.setupRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -132,6 +133,7 @@ class MainActivity : ComponentActivity() {
             playerConnection = null
         }
     }
+    var latestVersion by mutableStateOf(BuildConfig.VERSION_CODE.toLong())
 
     override fun onStart() {
         super.onStart()
@@ -162,6 +164,7 @@ class MainActivity : ComponentActivity() {
             MoreExecutors.directExecutor()
         )
 
+        setupRemoteConfig()
 
         setContent {
             val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
@@ -527,13 +530,8 @@ class MainActivity : ComponentActivity() {
                                         type = NavType.StringType
                                     }
                                 )
-                            ) { backStackEntry ->
-                                val playlistId = backStackEntry.arguments?.getString("playlistId")!!
-                                if (playlistId == LIKED_PLAYLIST_ID || playlistId == DOWNLOADED_PLAYLIST_ID) {
-                                    BuiltInPlaylistScreen(navController, scrollBehavior)
-                                } else {
-                                    LocalPlaylistScreen(navController, scrollBehavior)
-                                }
+                            ) {
+                                LocalPlaylistScreen(navController, scrollBehavior)
                             }
                             composable(
                                 route = "youtube_browse/{browseId}?params={params}",
@@ -551,7 +549,7 @@ class MainActivity : ComponentActivity() {
                                 YouTubeBrowseScreen(navController, scrollBehavior)
                             }
                             composable("settings") {
-                                SettingsScreen(navController, scrollBehavior)
+                                SettingsScreen(latestVersion, navController, scrollBehavior)
                             }
                             composable("settings/appearance") {
                                 AppearanceSettings(navController, scrollBehavior)
@@ -660,15 +658,28 @@ class MainActivity : ComponentActivity() {
                                             Screens.Playlists.route
                                         )
                                     ) {
-                                        IconButton(
-                                            onClick = {
-                                                navController.navigate("settings")
-                                            }
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier
+                                                .size(48.dp)
+                                                .clip(CircleShape)
+                                                .clickable {
+                                                    navController.navigate("settings")
+                                                }
                                         ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.settings),
-                                                contentDescription = null
-                                            )
+                                            BadgedBox(
+                                                badge = {
+                                                    if (latestVersion > BuildConfig.VERSION_CODE) {
+                                                        Badge()
+                                                    }
+                                                }
+                                            ) {
+
+                                                Icon(
+                                                    painter = painterResource(R.drawable.settings),
+                                                    contentDescription = null
+                                                )
+                                            }
                                         }
                                     }
                                 },

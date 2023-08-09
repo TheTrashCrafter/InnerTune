@@ -34,6 +34,7 @@ import com.zionhuang.music.LocalPlayerConnection
 import com.zionhuang.music.R
 import com.zionhuang.music.constants.MaxImageCacheSizeKey
 import com.zionhuang.music.constants.MaxSongCacheSizeKey
+import com.zionhuang.music.extensions.tryOrNull
 import com.zionhuang.music.ui.component.ListPreference
 import com.zionhuang.music.ui.component.PreferenceEntry
 import com.zionhuang.music.ui.component.PreferenceGroupTitle
@@ -61,10 +62,10 @@ fun StorageSettings(
         mutableStateOf(imageDiskCache.size)
     }
     var playerCacheSize by remember {
-        mutableStateOf(playerCache.cacheSpace)
+        mutableStateOf(tryOrNull { playerCache.cacheSpace } ?: 0)
     }
     var downloadCacheSize by remember {
-        mutableStateOf(downloadCache.cacheSpace)
+        mutableStateOf(tryOrNull { downloadCache.cacheSpace } ?: 0)
     }
 
     LaunchedEffect(imageDiskCache) {
@@ -76,13 +77,13 @@ fun StorageSettings(
     LaunchedEffect(playerCache) {
         while (isActive) {
             delay(500)
-            playerCacheSize = playerCache.cacheSpace
+            playerCacheSize = tryOrNull { playerCache.cacheSpace } ?: 0
         }
     }
     LaunchedEffect(downloadCache) {
         while (isActive) {
             delay(500)
-            downloadCacheSize = downloadCache.cacheSpace
+            downloadCacheSize = tryOrNull { downloadCache.cacheSpace } ?: 0
         }
     }
 
@@ -105,7 +106,7 @@ fun StorageSettings(
         )
 
         PreferenceEntry(
-            title = stringResource(R.string.clear_all_downloads),
+            title = { Text(stringResource(R.string.clear_all_downloads)) },
             onClick = {
                 coroutineScope.launch(Dispatchers.IO) {
                     downloadCache.keys.forEach { key ->
@@ -141,7 +142,7 @@ fun StorageSettings(
         }
 
         ListPreference(
-            title = stringResource(R.string.max_cache_size),
+            title = { Text(stringResource(R.string.max_cache_size)) },
             selectedValue = maxSongCacheSize,
             values = listOf(128, 256, 512, 1024, 2048, 4096, 8192, -1),
             valueText = {
@@ -151,7 +152,7 @@ fun StorageSettings(
         )
 
         PreferenceEntry(
-            title = stringResource(R.string.clear_song_cache),
+            title = { Text(stringResource(R.string.clear_song_cache)) },
             onClick = {
                 coroutineScope.launch(Dispatchers.IO) {
                     playerCache.keys.forEach { key ->
@@ -179,7 +180,7 @@ fun StorageSettings(
         )
 
         ListPreference(
-            title = stringResource(R.string.max_cache_size),
+            title = { Text(stringResource(R.string.max_cache_size)) },
             selectedValue = maxImageCacheSize,
             values = listOf(128, 256, 512, 1024, 2048, 4096, 8192),
             valueText = { formatFileSize(it * 1024 * 1024L) },
@@ -187,7 +188,7 @@ fun StorageSettings(
         )
 
         PreferenceEntry(
-            title = stringResource(R.string.clear_image_cache),
+            title = { Text(stringResource(R.string.clear_image_cache)) },
             onClick = {
                 coroutineScope.launch(Dispatchers.IO) {
                     imageDiskCache.clear()
