@@ -8,15 +8,19 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zionhuang.music.LocalPlayerAwareWindowInsets
@@ -48,7 +52,7 @@ fun LibrarySongsScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
-    var viewType by rememberEnumPreference(SongViewTypeKey, SongViewType.LIBRARY)
+    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIBRARY)
     val (sortType, onSortTypeChange) = rememberEnumPreference(SongSortTypeKey, SongSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(SongSortDescendingKey, true)
 
@@ -63,34 +67,52 @@ fun LibrarySongsScreen(
             state = lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
         ) {
-            item(key = "viewType") {
+            item(
+                key = "filter",
+                contentType = CONTENT_TYPE_HEADER
+            ) {
                 ChipsRow(
                     chips = listOf(
-                        SongViewType.LIBRARY to stringResource(R.string.filter_library),
-                        SongViewType.LIKED to stringResource(R.string.filter_liked),
-                        SongViewType.DOWNLOADED to stringResource(R.string.filter_downloaded)
+                        SongFilter.LIBRARY to stringResource(R.string.filter_library),
+                        SongFilter.LIKED to stringResource(R.string.filter_liked),
+                        SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded)
                     ),
-                    currentValue = viewType,
-                    onValueUpdate = { viewType = it }
+                    currentValue = filter,
+                    onValueUpdate = { filter = it }
                 )
             }
 
-            item(key = "header") {
-                SortHeader(
-                    sortType = sortType,
-                    sortDescending = sortDescending,
-                    onSortTypeChange = onSortTypeChange,
-                    onSortDescendingChange = onSortDescendingChange,
-                    sortTypeText = { sortType ->
-                        when (sortType) {
-                            SongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                            SongSortType.NAME -> R.string.sort_by_name
-                            SongSortType.ARTIST -> R.string.sort_by_artist
-                            SongSortType.PLAY_TIME -> R.string.sort_by_play_time
+            item(
+                key = "header",
+                contentType = CONTENT_TYPE_HEADER
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    SortHeader(
+                        sortType = sortType,
+                        sortDescending = sortDescending,
+                        onSortTypeChange = onSortTypeChange,
+                        onSortDescendingChange = onSortDescendingChange,
+                        sortTypeText = { sortType ->
+                            when (sortType) {
+                                SongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                                SongSortType.NAME -> R.string.sort_by_name
+                                SongSortType.ARTIST -> R.string.sort_by_artist
+                                SongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                            }
                         }
-                    },
-                    trailingText = pluralStringResource(R.plurals.n_song, songs.size, songs.size)
-                )
+                    )
+
+                    Spacer(Modifier.weight(1f))
+
+                    Text(
+                        text = pluralStringResource(R.plurals.n_song, songs.size, songs.size),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
             }
 
             itemsIndexed(
@@ -109,7 +131,6 @@ fun LibrarySongsScreen(
                                     SongMenu(
                                         originalSong = song,
                                         navController = navController,
-                                        playerConnection = playerConnection,
                                         onDismiss = menuState::dismiss
                                     )
                                 }

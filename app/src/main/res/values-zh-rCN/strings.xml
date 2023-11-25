@@ -85,7 +85,7 @@
     <string name="remove_from_history">从记录中移除</string>
     <string name="search_online">在线搜索</string>
     <string name="sync">同步</string>
-    <string name="playback_control">Playback control</string>
+    <string name="advanced">Advanced</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">新建时间</string>
@@ -173,6 +173,11 @@
     <!-- Player action -->
     <string name="action_like">喜欢</string>
     <string name="action_remove_like">取消喜欢</string>
+    <string name="action_shuffle_on">Shuffle on</string>
+    <string name="action_shuffle_off">Shuffle off</string>
+    <string name="repeat_mode_off">Repeat mode off</string>
+    <string name="repeat_mode_one">Repeat current song</string>
+    <string name="repeat_mode_all">Repeat queue</string>
 
     <!-- Queue Title -->
     <string name="queue_all_songs">全部歌曲</string>
@@ -251,4 +256,6 @@
     <string name="app_version">应用版本</string>
 
     <string name="new_version_available">New version available</string>
+    <string name="translation_models">Translation Models</string>
+    <string name="clear_translation_models">Clear translation models</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.zionhuang.music.utils
 
+import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ConfigUpdate
 import com.google.firebase.remoteconfig.ConfigUpdateListener
@@ -12,7 +13,7 @@ import kotlin.time.Duration.Companion.hours
 fun MainActivity.setupRemoteConfig() {
     val remoteConfig = Firebase.remoteConfig
     remoteConfig.setConfigSettingsAsync(remoteConfigSettings {
-        minimumFetchIntervalInSeconds = 12.hours.inWholeSeconds
+        minimumFetchIntervalInSeconds = 6.hours.inWholeSeconds
     })
     remoteConfig.fetchAndActivate()
         .addOnCompleteListener(this) { task ->
@@ -28,4 +29,9 @@ fun MainActivity.setupRemoteConfig() {
             }
         }
     })
+}
+
+fun reportException(throwable: Throwable) {
+    Firebase.crashlytics.recordException(throwable)
+    throwable.printStackTrace()
 }

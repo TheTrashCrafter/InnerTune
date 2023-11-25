@@ -86,7 +86,7 @@
     <string name="remove_from_history">Remove from history</string>
     <string name="search_online">Search online</string>
     <string name="sync">Sync</string>
-    <string name="playback_control">Playback control</string>
+    <string name="advanced">Advanced</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Lisäyspäivä</string>
@@ -182,6 +182,11 @@
     <!-- Player action -->
     <string name="action_like">Like</string>
     <string name="action_remove_like">Remove like</string>
+    <string name="action_shuffle_on">Shuffle on</string>
+    <string name="action_shuffle_off">Shuffle off</string>
+    <string name="repeat_mode_off">Repeat mode off</string>
+    <string name="repeat_mode_one">Repeat current song</string>
+    <string name="repeat_mode_all">Repeat queue</string>
 
     <!-- Queue Title -->
     <string name="queue_all_songs">All songs</string>
@@ -260,4 +265,6 @@
     <string name="app_version">Sovelluksen versio</string>
 
     <string name="new_version_available">New version available</string>
+    <string name="translation_models">Translation Models</string>
+    <string name="clear_translation_models">Clear translation models</string>
 </resources>

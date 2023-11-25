@@ -88,7 +88,7 @@
     <string name="remove_from_history">Выдаліць з гісторыі</string>
     <string name="search_online">Шукаць у сетцы</string>
     <string name="sync">Cінхранізацыя</string>
-    <string name="playback_control">Playback control</string>
+    <string name="advanced">Advanced</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Нядаўна дададзена</string>
@@ -200,6 +200,11 @@
     <!-- Player action -->
     <string name="action_like">Упадабаць</string>
     <string name="action_remove_like">Выдаліць з упадабаных</string>
+    <string name="action_shuffle_on">Shuffle on</string>
+    <string name="action_shuffle_off">Shuffle off</string>
+    <string name="repeat_mode_off">Repeat mode off</string>
+    <string name="repeat_mode_one">Repeat current song</string>
+    <string name="repeat_mode_all">Repeat queue</string>
 
     <!-- Queue Title -->
     <string name="queue_all_songs">Усе песні</string>
@@ -278,4 +283,6 @@
     <string name="app_version">Версія праграмы</string>
 
     <string name="new_version_available">New version available</string>
+    <string name="translation_models">Translation Models</string>
+    <string name="clear_translation_models">Clear translation models</string>
 </resources>

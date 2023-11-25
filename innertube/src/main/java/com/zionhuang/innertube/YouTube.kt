@@ -210,7 +210,7 @@ object YouTube {
             ?.gridRenderer
         if (gridRenderer != null) {
             ArtistItemsPage(
-                title = gridRenderer.header?.gridHeaderRenderer?.title?.runs?.firstOrNull()?.text!!,
+                title = gridRenderer.header?.gridHeaderRenderer?.title?.runs?.firstOrNull()?.text.orEmpty(),
                 items = gridRenderer.items.mapNotNull {
                     it.musicTwoRowItemRenderer?.let { renderer ->
                         ArtistItemsPage.fromMusicTwoRowItemRenderer(renderer)
@@ -491,7 +491,10 @@ object YouTube {
     }
 
     suspend fun accountInfo(): Result<AccountInfo> = runCatching {
-        innerTube.accountMenu(WEB_REMIX).body<AccountMenuResponse>().actions[0].openPopupAction.popup.multiPageMenuRenderer.header?.activeAccountHeaderRenderer?.toAccountInfo()!!
+        innerTube.accountMenu(WEB_REMIX).body<AccountMenuResponse>()
+            .actions[0].openPopupAction.popup.multiPageMenuRenderer
+            .header?.activeAccountHeaderRenderer
+            ?.toAccountInfo()!!
     }
 
     @JvmInline
