@@ -40,9 +40,6 @@ android {
     }
     flavorDimensions += "version"
     productFlavors {
-        create("full") {
-            dimension = "version"
-        }
         create("foss") {
             dimension = "version"
         }
