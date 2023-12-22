@@ -136,14 +136,5 @@ dependencies {
 
     coreLibraryDesugaring(libs.desugaring)
 
-    "fullImplementation"(platform(libs.firebase.bom))
-    "fullImplementation"(libs.firebase.analytics)
-    "fullImplementation"(libs.firebase.crashlytics)
-    "fullImplementation"(libs.firebase.config)
-    "fullImplementation"(libs.firebase.perf)
-    "fullImplementation"(libs.mlkit.language.id)
-    "fullImplementation"(libs.mlkit.translate)
-    "fullImplementation"(libs.opencc4j)
-
     implementation(libs.timber)
 }
